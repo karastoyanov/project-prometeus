@@ -2,7 +2,7 @@
 import xml.etree.ElementTree as ET
 
 
-tree = ET.parse('rocket.ork')
+tree = ET.parse("/home/rnduser/project-prometeus/prometeus/rocket.ork")
 root = tree.getroot()
 
 #for child in root:
