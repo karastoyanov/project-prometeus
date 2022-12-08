@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <openrocket version="1.6" creator="OpenRocket 15.03">
   <rocket>
-    <name>A simple model rocket</name>
-    <designer>Sampo Niskanen</designer>
+    <name>Prometeus</name>
+    <designer>Aleksandar Karastoyanov</designer>
     <motorconfiguration configid="da326836-0959-4c94-bcd5-49dee07235a4"/>
     <motorconfiguration configid="05896b5a-71a7-48ac-b7ae-eadeb267975b"/>
     <motorconfiguration configid="b13e8ca2-f54d-4ca8-9b23-06c6c9eb237a"/>
