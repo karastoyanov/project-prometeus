@@ -1,0 +1,2 @@
+1. Open CI Class Manager
+2. Create Child Class on Application
