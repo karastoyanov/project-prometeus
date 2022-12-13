@@ -19,6 +19,9 @@ for rocket in root.findall('rocket'):
     print(new_line)
     for config in all_configs:
         print(f'Engine Configuration: {str(config.attrib.values())[14:-3]}')
-print(new_line)
+    print(new_line)
+    all_subcomponents = rocket.findall('subcomponents')
+    for subcomponents in all_subcomponents:
+	print(f'Subcomponents: {str(subcomponent.attrib.value())}')
 
 
