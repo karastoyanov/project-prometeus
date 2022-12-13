@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 import xml.etree.ElementTree as ET
 
-
-tree = ET.parse("/home/rnduser/project-prometeus/prometeus/rocket.ork")
+tree = ET.parse(r'prometeus/rocket.ork')
+# tree = ET.parse("/home/rnduser/project-prometeus/prometeus/rocket.ork")
 root = tree.getroot()
 
 new_line = f'\n------------------------\n'
@@ -20,8 +20,18 @@ for rocket in root.findall('rocket'):
     for config in all_configs:
         print(f'Engine Configuration: {str(config.attrib.values())[14:-3]}')
     print(new_line)
-    all_subcomponents = rocket.findall('subcomponents')
-    for subcomponents in all_subcomponents:
-	print(f'Subcomponents: {str(subcomponent.attrib.value())}')
+    subcomponent = rocket.findall('subcomponents')
+    for a in subcomponent:
+        for b in a:
+            for c in b:
+                print(c.text)
+                for d in c:
+                    print(d.text)
+                    for e in d:
+                        print(e.text)
 
+print(new_line)
 
+textel = root.find('rocket/subcomponents/stage/name')
+print(textel.text)
+print(len(textel))
