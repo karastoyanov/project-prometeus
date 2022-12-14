@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 import xml.etree.ElementTree as ET
 
-tree = ET.parse(r'prometeus/rocket.ork')
-# tree = ET.parse("/home/rnduser/project-prometeus/prometeus/rocket.ork")
+#tree = ET.parse(r'prometeus/rocket.ork')
+tree = ET.parse("/home/rnduser/project-prometeus/prometeus/rocket.ork")
 root = tree.getroot()
 
 new_line = f'\n------------------------\n'
@@ -20,18 +20,21 @@ for rocket in root.findall('rocket'):
     for config in all_configs:
         print(f'Engine Configuration: {str(config.attrib.values())[14:-3]}')
     print(new_line)
-    subcomponent = rocket.findall('subcomponents')
-    for a in subcomponent:
-        for b in a:
-            for c in b:
-                print(c.text)
-                for d in c:
-                    print(d.text)
-                    for e in d:
-                        print(e.text)
 
-print(new_line)
 
-textel = root.find('rocket/subcomponents/stage/name')
-print(textel.text)
-print(len(textel))
+stages = root.find('rocket/subcomponents')
+print(f'Number of stages: {len(stages)}')
+for stage in stages:
+	print(f'Stage Name: {root.find("rocket/subcomponents/stage/name").text}')
+	print("***************************")
+	components = root.find('rocket/subcomponents/stage/subcomponents')
+	print(f'	Number of components: {len(components)}')
+	print(f'		Component Name: {root.find("rocket/subcomponents/stage/subcomponents/nosecone/name").text}')
+	print(f'			Appearance: ')
+	print(f'				Shine: {root.find("rocket/subcomponents/stage/subcomponents/nosecone/appearance/shine").text}')
+	print("***************************")
+	print(f'		Component Name: {root.find("rocket/subcomponents/stage/subcomponents/bodytube/name").text}')
+	print(f'			Appearance: ')
+	print(f'				Shine: {root.find("rocket/subcomponents/stage/subcomponents/nosecone/appearance/shine").text}')
+	print("***************************")
+
