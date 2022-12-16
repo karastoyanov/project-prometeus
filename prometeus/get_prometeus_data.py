@@ -64,25 +64,3 @@ with open("prometeus_data.txt", "w") as file:
 
 
 a = 5
-
-
-# stages = root.find('rocket/subcomponents') # Get all stages
-# file.write(f'Number of stages: {len(stages)}')
-
-# for stage in stages: # Iterate through all stages
-#     file.write(f'Stage Name: {root.find("rocket/subcomponents/stage/name").text}')
-#     file.write(new_subline)
-
-#     components = root.find('rocket/subcomponents/stage/subcomponents') # Get all components
-#     file.write(f'\tNumber of components: {len(components)}')
-#     for component in components: # Iterate through all components
-#         component_name = root.find(f'rocket/subcomponents/stage/subcomponents/{component.tag}/name').text
-#         file.write(f'\t\tComponent Name: {component_name}')
-#         paints = root.find(f'rocket/subcomponents/stage/subcomponents/{component.tag}/appearance/paint')
-#         file.write(f'\t\t\tAppearance:')
-#         for paint in paints.items():
-#             file.write(f'\t\t\t\t{paint[0].capitalize()} = {paint[1]}')
-#         file.write(f'\t\t\t\tShine: {root.find(f"rocket/subcomponents/stage/subcomponents/{component.tag}/appearance/shine").text}')
-#         file.write(f'\t\t\t\tFinish: {root.find(f"rocket/subcomponents/stage/subcomponents/{component.tag}/finish").text}')
-#         file.write(f'\t\t\t\tMaterial: {root.find(f"rocket/subcomponents/stage/subcomponents/{component.tag}/material").text}')
-#         file.write(f'\t\t{new_subline}')
