@@ -11,7 +11,7 @@ new_line = f'\n------------------------\n'
 new_subline = f'***************************'
 
 
-with open("result.txt", "w") as file:
+with open("prometeus_data.txt", "w") as file:
 	file.write(new_line)
 	for rocket in root.findall('rocket'):
 		rocket_name = rocket.find('name').text  # Get Rocket Name
