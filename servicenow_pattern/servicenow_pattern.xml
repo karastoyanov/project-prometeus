@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<unload unload_date="2023-01-16 08:36:21">
+<sys_update_version action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<file_path/>
+<instance_id>3048fcfc1b17a050e84d2f8dee4bcb2b</instance_id>
+<instance_name>dev109438</instance_name>
+<name>sa_pattern_7daa16542f331110df6f55f62799b6d3</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sa_pattern"><sa_pattern action="INSERT_OR_UPDATE"><active>true</active><ci_type>u_cmdb_ci_open_rocket_app</ci_type><cpattern_type>3</cpattern_type><description/><directory>false</directory><enforce_proc_classy>false</enforce_proc_classy><invoke_per_account>false</invoke_per_account><metadata_id>7daa16542f331110df6f55f62799b6d3</metadata_id><name>Open Rocket App</name><ndl>pattern {&#13;
+	metadata {&#13;
+		id = "7daa16542f331110df6f55f62799b6d3"&#13;
+		name = "Open Rocket App"&#13;
+		description = ""&#13;
+		citype = "u_cmdb_ci_open_rocket_app"&#13;
+	}&#13;
+	identification {&#13;
+		name = "Discovery"&#13;
+		entry_point {type = "*"}&#13;
+		find_process_strategy {strategy = NONE}&#13;
+		step {&#13;
+			name = "Open XML FIle"&#13;
+			disabled = "true"&#13;
+			runcmd_to_var {&#13;
+				cmd = "cat /home/rnduser/project-prometeus/prometeus/rocket.ork | "&#13;
+				execution_mode = "DEFAULT"&#13;
+				var_names = table {&#13;
+					name = "rocket_config"&#13;
+					col_names = "rocket_name_2","designer_name_2","subcomponent"&#13;
+				}&#13;
+				parsing_strategy = xml_parsing_strategy {&#13;
+					rootXpath = "/openrocket"&#13;
+					fields {&#13;
+						field {&#13;
+							col_name = "rocket_name_2"&#13;
+							xpath = "/openrocket/rocket/name/text()"&#13;
+							delimiters = ""&#13;
+							position = 1&#13;
+						}&#13;
+						field {&#13;
+							col_name = "designer_name_2"&#13;
+							xpath = "/openrocket/rocket/designer/text()"&#13;
+							delimiters = ""&#13;
+							position = 1&#13;
+						}&#13;
+						field {&#13;
+							col_name = "subcomponent"&#13;
+							xpath = "/openrocket/rocket/subcomponents/stage/subcomponents/nosecone/name/text()"&#13;
+							delimiters = ""&#13;
+							position = 1&#13;
+						}&#13;
+						field {&#13;
+							col_name = "forEach"&#13;
+							for_each = "forEach"&#13;
+							delimiters = ""&#13;
+							position = 1&#13;
+						}&#13;
+					}&#13;
+				}&#13;
+				if_not_found_do = nop {}&#13;
+				cache_flag = 0&#13;
+			}&#13;
+		}&#13;
+		step {&#13;
+			name = "Find Script Location"&#13;
+			runcmd_to_var {&#13;
+				cmd = "find / -name get_prometeus_data.py -print 2&gt;/dev/null"&#13;
+				execution_mode = "LOCAL_SCRIPT"&#13;
+				var_names = "script_location"&#13;
+				parsing_strategy = regex_parsing {regex = "(/project.+)"}&#13;
+				if_not_found_do = nop {}&#13;
+				cache_flag = 0&#13;
+			}&#13;
+		}&#13;
+		step {&#13;
+			name = "Find Project Dir"&#13;
+			runcmd_to_var {&#13;
+				cmd = "find -type d -name prometeus 2&gt;/dev/null"&#13;
+				execution_mode = "DEFAULT"&#13;
+				var_names = "project_dir"&#13;
+				parsing_strategy = delimited_parsing {&#13;
+					selected_positions = 1&#13;
+				}&#13;
+				if_not_found_do = nop {}&#13;
+				cache_flag = 0&#13;
+			}&#13;
+		}&#13;
+		step {&#13;
+			name = "Get Rocket Name"&#13;
+			runcmd_to_var {&#13;
+				cmd = concat {&#13;
+					get_attr {"python3"}&#13;
+					" ~"&#13;
+					get_attr {"script_location"}&#13;
+				}&#13;
+				execution_mode = "DEFAULT"&#13;
+				var_names = "rocket_name"&#13;
+				parsing_strategy = regex_parsing {regex = "\\bRocket Name:\\s(\\w+)"}&#13;
+				if_not_found_do = nop {}&#13;
+				cache_flag = 0&#13;
+			}&#13;
+		}&#13;
+		step {&#13;
+			name = "Get Designer Name"&#13;
+			runcmd_to_var {&#13;
+				cmd = concat {&#13;
+					get_attr {"python3"}&#13;
+					" ~"&#13;
+					get_attr {"script_location"}&#13;
+				}&#13;
+				execution_mode = "DEFAULT"&#13;
+				var_names = "designer_name"&#13;
+				parsing_strategy = regex_parsing {regex = "\\bDesigner Name:\\s(.+)"}&#13;
+				if_not_found_do = nop {}&#13;
+				cache_flag = 0&#13;
+			}&#13;
+		}&#13;
+		step {&#13;
+			name = "Get Engine Configs (Active)"&#13;
+			runcmd_to_var {&#13;
+				cmd = concat {&#13;
+					get_attr {"python3"}&#13;
+					" ~"&#13;
+					get_attr {"script_location"}&#13;
+				}&#13;
+				execution_mode = "DEFAULT"&#13;
+				var_names = table {&#13;
+					name = "rocket_info"&#13;
+					col_names = "engine_active"&#13;
+				}&#13;
+				parsing_strategy = regex_parsing {regex = "\\bEngine Configuration:\\s(.+)\\b', 'true"}&#13;
+				if_not_found_do = nop {}&#13;
+				cache_flag = 0&#13;
+			}&#13;
+		}&#13;
+		step {&#13;
+			name = "Get Engine Configs (1st Available)"&#13;
+			if {&#13;
+				condition = is_empty {get_attr {"rocket_info[*].engine_active"}}&#13;
+				on_true = runcmd_to_var {&#13;
+					cmd = concat {&#13;
+						get_attr {"python3"}&#13;
+						" ~"&#13;
+						get_attr {"script_location"}&#13;
+					}&#13;
+					execution_mode = "DEFAULT"&#13;
+					var_names = table {&#13;
+						name = "rocket_info"&#13;
+						col_names = "engine_active"&#13;
+					}&#13;
+					parsing_strategy = regex_parsing {regex = "\\bEngine Configuration:\\s(.+)"}&#13;
+					if_not_found_do = nop {}&#13;
+					cache_flag = 0&#13;
+				}&#13;
+				on_false = nop {}&#13;
+			}&#13;
+		}&#13;
+		step {&#13;
+			name = "Get Number of stages"&#13;
+			runcmd_to_var {&#13;
+				cmd = concat {&#13;
+					get_attr {"python3"}&#13;
+					" ~"&#13;
+					get_attr {"script_location"}&#13;
+				}&#13;
+				execution_mode = "DEFAULT"&#13;
+				var_names = "number_of_stages"&#13;
+				parsing_strategy = regex_parsing {regex = "\\bNumber of stages:\\s(\\d+)"}&#13;
+				if_not_found_do = nop {}&#13;
+				cache_flag = 0&#13;
+			}&#13;
+		}&#13;
+		step {&#13;
+			name = "Get Stage Name"&#13;
+			runcmd_to_var {&#13;
+				cmd = concat {&#13;
+					get_attr {"python3"}&#13;
+					" ~"&#13;
+					get_attr {"script_location"}&#13;
+				}&#13;
+				execution_mode = "DEFAULT"&#13;
+				var_names = "stage_name"&#13;
+				parsing_strategy = regex_parsing {regex = "\\bStage Name:\\s(\\w+)"}&#13;
+				if_not_found_do = nop {}&#13;
+				cache_flag = 0&#13;
+			}&#13;
+		}&#13;
+		step {&#13;
+			name = "Get Number of components"&#13;
+			runcmd_to_var {&#13;
+				cmd = concat {&#13;
+					get_attr {"python3"}&#13;
+					" ~"&#13;
+					get_attr {"script_location"}&#13;
+				}&#13;
+				execution_mode = "DEFAULT"&#13;
+				var_names = "number_of_components"&#13;
+				parsing_strategy = regex_parsing {regex = "\\bNumber of components:\\s(\\d+)"}&#13;
+				if_not_found_do = nop {}&#13;
+				cache_flag = 0&#13;
+			}&#13;
+		}&#13;
+		step {&#13;
+			name = "Get Component Attributes"&#13;
+			runcmd_to_var {&#13;
+				cmd = "cat /home/rnduser/project-prometeus/prometeus/rocket.xml"&#13;
+				execution_mode = "DEFAULT"&#13;
+				var_names = table {&#13;
+					name = "component_one"&#13;
+					col_names = "name_value","shine"&#13;
+				}&#13;
+				parsing_strategy = xml_parsing_strategy {&#13;
+					rootXpath = "/openrocket"&#13;
+					fields {&#13;
+						field {&#13;
+							col_name = "name_value"&#13;
+							xpath = "/openrocket/rocket/subcomponents/stage/subcomponents/nosecone/name/text()"&#13;
+							delimiters = ""&#13;
+							position = 1&#13;
+						}&#13;
+						field {&#13;
+							col_name = "shine"&#13;
+							xpath = "/openrocket/rocket/subcomponents/stage/subcomponents/nosecone/appearance/shine/text()"&#13;
+							delimiters = ""&#13;
+							position = 1&#13;
+						}&#13;
+						field {&#13;
+							col_name = "forEach"&#13;
+							for_each = "forEach"&#13;
+							delimiters = ""&#13;
+							position = 1&#13;
+						}&#13;
+					}&#13;
+				}&#13;
+				if_not_found_do = nop {}&#13;
+				cache_flag = 0&#13;
+			}&#13;
+		}&#13;
+		step {&#13;
+			name = "Populate Table"&#13;
+			transform {&#13;
+				src_table_name = "u_cmdb_ci_open_rocket_app"&#13;
+				target_table_name = "u_cmdb_ci_open_rocket_app"&#13;
+				operation {&#13;
+					set_field {&#13;
+						field_name = "u_rocket_name"&#13;
+						value = get_attr {"rocket_name"}&#13;
+					}&#13;
+					set_field {&#13;
+						field_name = "u_designer_name"&#13;
+						value = get_attr {"designer_name"}&#13;
+					}&#13;
+					set_field {&#13;
+						field_name = "u_engine_configuration"&#13;
+						value = get_attr {"rocket_info[1].engine_active"}&#13;
+					}&#13;
+					set_field {&#13;
+						field_name = "u_number_of_stages"&#13;
+						value = get_attr {"number_of_stages"}&#13;
+					}&#13;
+					set_field {&#13;
+						field_name = "u_number_of_components"&#13;
+						value = get_attr {"number_of_components"}&#13;
+					}&#13;
+					set_field {&#13;
+						field_name = "u_component_1"&#13;
+						value = get_attr {"component_one[*]"}&#13;
+					}&#13;
+				}&#13;
+			}&#13;
+		}&#13;
+	}&#13;
+}&#13;
+</ndl><parent/><serverless>true</serverless><source/><sys_class_name>sa_pattern</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2022-12-12 07:43:51</sys_created_on><sys_domain>global</sys_domain><sys_domain_path>/</sys_domain_path><sys_id>7daa16542f331110df6f55f62799b6d3</sys_id><sys_mod_count>21</sys_mod_count><sys_name>Open Rocket App</sys_name><sys_overrides/><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_replace/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sa_pattern_7daa16542f331110df6f55f62799b6d3</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2022-12-15 15:36:55</sys_updated_on><version/></sa_pattern></record_update>]]></payload>
+<payload_hash>820849100</payload_hash>
+<record_name>Open Rocket App</record_name>
+<reverted_from display_value=""/>
+<source>fad8887521920110a866589604c20da8</source>
+<source_table>sys_update_set</source_table>
+<state>current</state>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2022-12-15 15:36:55</sys_created_on>
+<sys_id>38b367d12fbb5510df6f55f62799b632</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>185166e72ac0000001</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2022-12-15 15:36:55</sys_updated_on>
+<type>Discovery Patterns</type>
+<update_guid>30b367d193bb5510ef03fc32da266732</update_guid>
+<update_guid_history>30b367d193bb5510ef03fc32da266732:820849100,77336b51c8bb5510220817a2ab01eec9:-227446431,abfed311b07b5510e650f8d9db503849:-1760340747,63dd9b9dac3b5510d397300732cd31f8:1877254562,ce5bc10dc1f71110fa4f593da9ec1e24:-1805966123,28921dfcdfffd11070f7374195de8d18:-1596237626,84c095784affd11093fb751cab579aa6:914575652,72501df475ffd110540055dabd12e4dc:-1596237626,6d0e09fcf7bfd1100c0e18d07144b6dc:757399888,668b45b4ecbfd110f8f067a55ceb39d7:-1566212039,90323ba4c73f9110f9caf5f12afbce6b:1887769630,1d382f5caffb1110b7ccb183b0ff36f5:-488934212,2aa467144bfb1110310ffa7663a0a97f:1887769630,530f9b5846bb11108cff2303aafee6c0:-710108109,1e727ed43b3711107332e2f4bff64e3b:1887769630,74327ed4833711104510927d04ff64e4:-1075601698,8d517254933711103d65d63c782f5dd9:1295871249,92fd229887f3111053503ca9dfc68222:-1078566987,dbaa6e50c9f3111004eb6bdf46f55036:621589178,19ce1e186373111041a968444fd4cb33:1845084538,33be5e58ca731110a54e1a412ec7a82d:-1676794926,8aaa92508d73111097dc56a17f87f39f:457540351</update_guid_history>
+</sys_update_version>
+</unload>
