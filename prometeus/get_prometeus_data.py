@@ -3,7 +3,6 @@ import xml.etree.ElementTree as ET
 import re
 
 tree = ET.parse(r'prometeus/rocket.ork')
-# tree = ET.parse("/home/rnduser/project-prometeus/prometeus/rocket.ork")
 root = tree.getroot()
 
 
