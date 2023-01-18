@@ -71,4 +71,3 @@ with open("prometeus_data.txt", "w") as file:
 		print(new_line)
 		file.write(new_line)
 
-a = 5
